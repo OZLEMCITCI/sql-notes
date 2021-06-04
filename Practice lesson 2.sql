@@ -1,0 +1,282 @@
+--- WARMUP 10 Minutes
+
+--1) If you have "suppliers" table in your schema, drop it
+--2) Create "suppliers" table whose fields are "supplier_id", "supplier_name", "contact_name"
+--3) "supplier_id"s should be 1, 2, 3, 4
+--4) "supplier_name"s should be IBM, APPLE, SAMSUNG, IBM
+--5) "contact_name"s should be "Jhon Walker", "Tom Hanks", "Tae Shaun", "Chris Tien"
+
+--How to create PRIMARY KEY by using multiple fields
+CREATE TABLE suppliers(
+
+    supplier_id NUMBER(10),
+    supplier_name VARCHAR2(30),
+    contact_name VARCHAR2(30),
+    CONSTRAINT suppliers_pk PRIMARY KEY(supplier_id, supplier_name)
+
+);
+
+INSERT INTO suppliers VALUES(1, 'IBM', 'Jhon Walker');
+INSERT INTO suppliers VALUES(2, 'APPLE', 'Tom Hanks');
+INSERT INTO suppliers VALUES(3, 'SAMSUNG', 'Tae Shaun');
+INSERT INTO suppliers VALUES(4, 'IBM', 'Chris Tien');
+INSERT INTO suppliers VALUES(4, 'IBMX', 'Ali Can');
+INSERT INTO suppliers VALUES(5, 'IBMX', 'Ali Can');
+INSERT INTO suppliers VALUES(6, 'IBMX', 'Ali Can');
+
+DROP TABLE suppliers;
+
+-- How to update data in a table (DML)
+UPDATE suppliers 
+SET supplier_id=6
+WHERE supplier_name='IBM';
+
+--How to update multiple data in a table
+UPDATE suppliers 
+SET contact_name='VELI HAN'
+WHERE supplier_id>4;
+--3.Example
+UPDATE suppliers
+SET supplier_name = 'HONDA',
+    contact_name = 'Angie Sun'
+WHERE supplier_id = 3;
+
+--Create "my_employees1" table with employee_id, employee_name, employee_salary then insert 3 records 
+CREATE TABLE my_employees1(
+    employee_id CHAR(3),
+    employee_name VARCHAR2(30),
+    employee_salary NUMBER(7,2)
+);
+
+INSERT INTO my_employees1 VALUES('101', 'Tom Hanks', 3000.00);
+INSERT INTO my_employees1 VALUES('102', 'Angelina Julie', 3500.75);
+INSERT INTO my_employees1 VALUES('103', 'Brad Pitt', 4500.75);
+
+SELECT * FROM my_employees1;
+
+DROP TABLE my_employees1;
+
+--Create "my_positions" table with position_id, position_name, position_salary then insert 3 records 
+CREATE TABLE my_positions(
+    position_id CHAR(3),
+    position_name VARCHAR2(20),
+    position_salary NUMBER(7,2)
+);
+
+SELECT * FROM my_positions;
+
+INSERT INTO my_positions VALUES('901', 'Junior Worker', 2000.50);
+INSERT INTO my_positions VALUES('902', 'Senior Worker', 5000.00);
+INSERT INTO my_positions VALUES('902', 'Manager', 10000.00);
+
+--How to update a data by getting data from another table
+--update angelina julie salary to manager salary by using my positions table
+SELECT*FROM my_employees1;
+
+
+UPDATE my_employees1
+SET employee_salary=(
+            select position_salary
+            FROM my_positions
+            WHERE position_name='Manager')
+WHERE employee_name='Angelina Julie';
+
+UPDATE my_employees1
+SET employee_salary =(
+                        SELECT position_salary
+                        FROM my_positions
+                        WHERE position_name ='Manager'
+                       )
+WHERE employee_name = 'Angelina Julie';
+
+
+--Update the Brad Pitt's name to Brad Pitt Julie and Brad Pitt's salary to Senior Worker's salary
+
+--We need to make %10 discount for Senior position and Manager position salaries for the employees 
+
+
+--Change the salary to 6000 if the salary is less than 5000
+
+--Change the salary to 7000 if the salary is less than Senior Worker salary
+
+--Note: Sub Queries can be used after "SET" or "WHERE" keyword
+
+--"IS NULL" Condition
+CREATE TABLE people
+(
+ ssn CHAR(9),
+ name VARCHAR2(50),
+ address VARCHAR2(50)
+);
+
+INSERT INTO people VALUES(123456789, 'Mark Star', 'Florida');
+INSERT INTO people VALUES(234567890, 'Angie Way', 'Virginia');
+INSERT INTO people VALUES(345678901, 'Maryy Tien', 'New Jersey');
+INSERT INTO people(ssn, address) VALUES(456789012, 'Michigan');
+INSERT INTO people(ssn, address) VALUES(567890123, 'California');
+INSERT INTO people(ssn, name) VALUES(567890123, 'California');
+
+SELECT *
+FROM people
+WHERE name IS NULL OR address IS NULL;
+
+--How to update "null" to more understandable data
+--1. Way
+UPDATE people
+SET name = 'Name is not inserted yet'
+WHERE name IS NULL;
+
+UPDATE people
+SET address = 'Address is not inserted yet'
+WHERE address IS NULL;
+
+--2. Way
+UPDATE people
+SET name = COALESCE(name, 'Name is not inserted yet'),
+    address = COALESCE(address, 'Address is not inserted yet');
+
+DROP TABLE people;
+
+--How to delete data from a table
+--What is the difference between "DROP" and "DELETE"?
+--DROP removes the table from schema completely that is, it removes table data and table structure
+--DELETE does not touch the table structure, it removes just data inside the table
+
+CREATE TABLE people
+(
+ ssn CHAR(9),
+ name VARCHAR2(50),
+ address VARCHAR2(50)
+);
+
+INSERT INTO people VALUES(123456789, 'Mark Star', 'Florida');
+INSERT INTO people VALUES(234567890, 'Angie Way', 'Virginia');
+INSERT INTO people VALUES(345678901, 'Maryy Tien', 'New Jersey');
+INSERT INTO people(ssn, address) VALUES(456789012, 'Michigan');
+INSERT INTO people(ssn, address) VALUES(567890123, 'California');
+INSERT INTO people(ssn, name) VALUES(567890123, 'California');
+
+SELECT * FROM people;
+
+--1)How to delete all records from a table
+
+
+--2)How to delete a specific record
+
+--3)Delete all records whose names are null or addresses are null
+
+
+--4)Delete all records whose names are not null
+
+
+
+--What is "TRUNCATE"?
+
+--1)"TRUNCATE" is used to remove just "all" records. 
+--  But "DELETE" is used to remove "all" and "specific" records
+--2)If you use "TRUNCATE" you CANNOT roll the records back.
+--  But when you use "DELETE" you CAN roll the records back.
+--3)You CANNOT use "WHERE" clause in "TRUNCATE"
+--  But in "DELETE" you can
+
+
+TRUNCATE TABLE people;
+
+--How to prevent to roll a table back after using "DROP"?
+--If you use "PURGE" together with "DROP", the table will be removed from schema and to roll it back will be impossible
+
+
+
+
+-- Using "SELECT" statement (DQL)
+--1)How to get all records from a table
+
+
+--2)How to select specific records from a table
+--1. Example
+SELECT *
+FROM people
+WHERE name = 'Maryy Tien';
+
+--3. Example
+--Select records whose name lengths are less than 10
+
+
+CREATE TABLE workers
+(
+    id CHAR(5),
+    name VARCHAR2(50),
+    salary NUMBER(5),
+    CONSTRAINT id4_pk PRIMARY KEY(id)
+);
+
+INSERT INTO workers VALUES(10001, 'Ali Can', 12000);
+INSERT INTO workers VALUES(10002, 'Veli Han', 2000);
+INSERT INTO workers VALUES(10003, 'Mary Star', 7000);
+INSERT INTO workers VALUES(10004, 'Angie Ocean', 8500);
+
+SELECT *
+FROM workers;
+
+
+--4)Example
+--Select minimum salary from the workers table
+
+
+--5)Example
+--Select maximum salary from the workers table by using alias
+
+
+--6)Example
+--Select maximum and minumum salary from the workers table by using alias
+
+--7) Example
+--Select the record whose salary is maximum
+
+
+--8) Example
+--Select the record whose salary is minimum
+
+--9) Example
+--Select the record whose salary is minimum or maximum
+
+
+--10)Example
+--Select second maximum salary from the workers table by using alias
+
+
+--11)Example
+--Select second minimum salary from the workers table by using alias
+
+
+--12) Example
+--Select the record whose salary is the second maximum
+--1. Way
+
+
+--2. Way
+--To sort records in SQL we use "ORDER BY" with field name. It puts the records in ascending order as default, if you want to put records in descending order
+--you have to declare
+
+--If you want to skip some records from the top use "OFFSET <number of rows> ROW"
+
+--If you want to get some records from top use "FETCH NEXT <number of rows> ROW ONLY"
+
+
+--13)Example
+--Select the record whose salary is the second minimum
+--1.Way
+
+
+--2.Way
+
+
+
+--14)Example
+--Select all data of the worker whose salary is the third maximum salary from the workers table by using alias
+--1. Way
+
+                
+--2.Way
+
+
